@@ -1,6 +1,2 @@
-/.vscode
-/targets
-/dist
-/buildenv
-/Makefile
-/build
+/build/
+/dist/
