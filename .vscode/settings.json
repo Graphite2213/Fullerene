@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "print.h": "c"
+        "ostdio.h": "c",
+        "fulio.h": "c",
+        "stdint.h": "c",
+        "meman.h": "c"
     }
 }
