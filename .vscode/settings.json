@@ -4,5 +4,6 @@
         "fulio.h": "c",
         "stdint.h": "c",
         "meman.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
