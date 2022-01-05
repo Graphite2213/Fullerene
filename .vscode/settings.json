@@ -3,7 +3,9 @@
         "ostdio.h": "c",
         "fulio.h": "c",
         "stdint.h": "c",
-        "meman.h": "c"
+        "meman.h": "c",
+        "ostderr.h": "c",
+        "gdtmng.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
