@@ -4,3 +4,5 @@
 #include <stddef.h>
 
 void kerror(char* str);
+
+void ferror();

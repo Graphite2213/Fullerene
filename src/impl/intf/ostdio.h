@@ -27,7 +27,4 @@ void print_clear();
 void print_char(char character);
 void print_str(char *string);
 void print_set_color(uint8_t foreground, uint8_t background);
-static inline void outb(uint16_t port, uint8_t val);
-static inline uint8_t inb(uint16_t port);
-static inline void io_wait(void);
 void clear_row(size_t row);
