@@ -11,3 +11,6 @@ can by:
 - Running `make build-x86_64`
 - Using QEMU's `qemu-system-x86_64` command on the
 `kernel.iso` file
+
+To run this you will need to have QEMU and Docker
+installed on your machine.
