@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+#include <stddef.h>
+
 #define PIC1		0x20		/* IO base address for master PIC */
 #define PIC2		0xA0		/* IO base address for slave PIC */
 #define PIC1_COMMAND	PIC1
@@ -18,6 +21,10 @@
 #define ICW4_BUF_SLAVE	0x08		/* Buffered mode/slave */
 #define ICW4_BUF_MASTER	0x0C		/* Buffered mode/master */
 #define ICW4_SFNM	0x10		/* Special fully nested (not) */
+
+#define IA32_APIC_BASE_MSR 0x1B
+#define IA32_APIC_BASE_MSR_BSP 0x100
+#define IA32_APIC_BASE_MSR_ENABLE 0x800
  
 void eoi(unsigned char irq);
 void pic_init(int offset1, int offset2);
@@ -44,3 +51,20 @@ static inline void io_wait(void)
 {
     outb(0x80, 0);
 }
+
+void picDisable();
+
+void cpu_set_apic_base(uintptr_t apic);
+
+uintptr_t cpu_get_apic_base();
+
+void cpuGetMSR(uint32_t msr, uint32_t *lo, uint32_t *hi);
+
+void cpuSetMSR(uint32_t msr, uint32_t *lo, uint32_t *hi);
+
+void write_reg(uint32_t reg, uint32_t value);
+
+uint32_t read_reg(uint32_t reg);
+
+uint32_t readAPIC(void *ioapicaddr, uint32_t reg);
+void writeAPIC(void *ioapicaddr, uint32_t reg, uint32_t value);
