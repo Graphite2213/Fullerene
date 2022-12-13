@@ -1,11 +1,9 @@
-#include "picc.h"
+#include "pic.h"
 
 void pic_eoi(unsigned char irq)
 {
-	if(irq >= 8)
-		outb(PIC2_COMMAND,PIC_EOI);
- 
-	outb(PIC1_COMMAND,PIC_EOI);
+	outb(PIC2_COMMAND, PIC_EOI);
+	outb(PIC1_COMMAND, PIC_EOI);
 }
 
 void picDisable() {
@@ -44,9 +42,9 @@ void pic_init(int offset1, int offset2) {
  
 	outb(PIC1_DATA, a1);   // restore saved masks.
 	outb(PIC2_DATA, a2);
-    picDisable();
-	io_wait();
-	apicinit();
+	outb(0x21,0xfd);
+    outb(0xa1,0xff);
+	__asm__ volatile("sti");
 }
 
 

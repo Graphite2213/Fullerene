@@ -5,7 +5,8 @@
         "stdint.h": "c",
         "meman.h": "c",
         "ostderr.h": "c",
-        "gdtmng.h": "c"
+        "gdtmng.h": "c",
+        "stdio.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

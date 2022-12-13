@@ -59,8 +59,8 @@
 #define PAGING_FLAGS_KERNEL_PAGE (PAGING_FLAG_PRESENT | PAGING_FLAG_WRITE)
 #define PAGING_FLAGS_USER_PAGE (PAGING_FLAG_PRESENT | PAGING_FLAG_WRITE | PAGING_FLAG_USER)
 
-#define PAGING_PAGE_SIZE 0x1000
-#define PAGING_PAGE_BOUNDARY 0x1000
+#define PAGING_PAGE_SIZE 0x200000
+#define PAGING_PAGE_BOUNDARY 0x200000
 #define PAGING_PAGE_ALIGNED __attribute__((aligned(PAGING_PAGE_SIZE)))
 
 #define PAGING_KERNEL_OFFSET 0xffffffff80000000
@@ -91,10 +91,10 @@ typedef struct
     uint64_t base;
 } __attribute__((packed)) idtr_t;
 
-void idt_reload(idtr_t *idtr);
 uint8_t idt_allocate_vector(void);
 void idt_free_vector(uint8_t vector);
-void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags, uint8_t ist);
+void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags);
 void isr_exception_handler();
 void idt_assemble(void);
 void idt_init(void);
+void initialize_keyboard(void);
