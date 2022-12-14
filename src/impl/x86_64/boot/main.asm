@@ -12,9 +12,8 @@ start:
 
 	call setup_page_tables
 	call enable_paging
-
-	lgdt [gdt64.pointer]
-	jmp gdt64.code_segment:long_mode_start
+	
+	jmp long_mode_start
 
 	hlt
 
@@ -138,12 +137,3 @@ page_table_l2:
 stack_bottom:
 	resb 4096 * 4
 stack_top:
-
-section .rodata
-gdt64:
-	dq 0 ; zero entry
-.code_segment: equ $ - gdt64
-	dq (1 << 43) | (1 << 44) | (1 << 47) | (1 << 53) ; code segment
-.pointer:
-	dw $ - gdt64 - 1 ; length
-	dq gdt64 ; address
