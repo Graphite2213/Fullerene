@@ -84,25 +84,38 @@ setup_page_tables:
 	ret
 
 enable_paging:
-	; pass page table location to cpu
+  	; Skip these 3 lines if paging is already disabled
+  	mov ebx, cr0
+  	and ebx, ~(1 << 31)
+ 	mov cr0, ebx
+ 
+  	; Enable PAE
+  	mov edx, cr4
+  	or  edx, (1 << 5)
+  	mov cr4, edx
+ 
+  	; Set LME (long mode enable)
+  	mov ecx, 0xC0000080
+  	rdmsr
+  	or  eax, (1 << 8)
+  	wrmsr
+
 	mov eax, page_table_l4
-	mov cr3, eax
-
-	; enable PAE
-	mov eax, cr4
-	or eax, 1 << 5
-	mov cr4, eax
-
-	; enable long mode
-	mov ecx, 0xC0000080
-	rdmsr
-	or eax, 1 << 8
-	wrmsr
-
-	; enable paging
-	mov eax, cr0
-	or eax, 1 << 31
-	mov cr0, eax
+  	mov cr3, eax
+ 
+  	; Enable paging (and protected mode, if it isn't already active)
+  	or ebx, (1 << 31) | (1 << 0)
+  	mov cr0, ebx
+ 
+  	; Now reload the segment registers (CS, DS, SS, etc.) with the appropriate segment selectors...
+ 
+  	mov ax, 0
+  	mov ds, ax
+  	mov es, ax
+  	mov fs, ax
+  	mov gs, ax
+ 
+  	; Reload CS with a 64-bit code selector by performing a long jmp
 
 	ret
 

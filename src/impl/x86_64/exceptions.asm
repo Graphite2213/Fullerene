@@ -73,7 +73,7 @@ isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
 isr_keyboard 32
-isr_keyboard    33
+isr_keyboard 33
 isr_keyboard 34
 isr_keyboard 35
 isr_keyboard 36
