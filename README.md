@@ -8,9 +8,11 @@ can by:
 
 - Cloning the source code
 - Running the docker container
-- Running `make build-x86_64`
+- Running `make build`
 - Using QEMU's `qemu-system-x86_64` command on the
 `kernel.iso` file
 
 To run this you will need to have QEMU and Docker
 installed on your machine.
+
+Also haha get it graphite and fullerene
