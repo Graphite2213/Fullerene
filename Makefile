@@ -1,35 +1,30 @@
-kernel_source_files := $(shell find src/impl/kernel -name *.c)
-kernel_object_files := $(patsubst src/impl/kernel/%.c, build/kernel/%.o, $(kernel_source_files))
+Kernel_C_Files := $(shell find src/kernel -name *.c)
+Kernel_O_Files := $(patsubst src/kernel/%.c, build/kernel/%.o, $(Kernel_C_Files))
 
-x86_64_c_source_files := $(shell find src/impl/x86_64 -name *.c)
-x86_64_c_object_files := $(patsubst src/impl/x86_64/%.c, build/x86_64/%.o, $(x86_64_c_source_files))
+Boot_ASM_Files := $(shell find src/boot -name *.asm)
+Boot_O_Files := $(patsubst src/boot/%.asm, build/boot/%.o, $(Boot_ASM_Files))
 
-x86_64_asm_source_files := $(shell find src/impl/x86_64 -name *.asm)
-x86_64_asm_object_files := $(patsubst src/impl/x86_64/%.asm, build/x86_64/%.o, $(x86_64_asm_source_files))
+All_Object_Files := $(Kernel_O_Files) $(Boot_O_Files)
 
-x86_64_object_files := $(x86_64_c_object_files) $(x86_64_asm_object_files)
-
-$(kernel_object_files): build/kernel/%.o : src/impl/kernel/%.c
+$(Kernel_O_Files): build/kernel/%.o : src/kernel/%.c
 	mkdir -p $(dir $@) && \
-	x86_64-elf-gcc -c -I src/impl/intf -ffreestanding $(patsubst build/kernel/%.o, src/impl/kernel/%.c, $@) -g -o $@
+	i686-elf-gcc -c -I src/kernel -ffreestanding $(patsubst build/kernel/%.o, src/kernel/%.c, $@) -g -o $@
 
-$(x86_64_c_object_files): build/x86_64/%.o : src/impl/x86_64/%.c
+$(Boot_O_Files): build/boot/%.o : src/boot/%.asm
 	mkdir -p $(dir $@) && \
-	x86_64-elf-gcc -c -I src/impl/intf -ffreestanding $(patsubst build/x86_64/%.o, src/impl/x86_64/%.c, $@) -g -o $@
-
-$(x86_64_asm_object_files): build/x86_64/%.o : src/impl/x86_64/%.asm
-	mkdir -p $(dir $@) && \
-	nasm -f elf64 $(patsubst build/x86_64/%.o, src/impl/x86_64/%.asm, $@) -o $@
+	nasm -felf32 $(patsubst build/boot/%.o, src/boot/%.asm, $@) -o $@
 
 .PHONY: build
-build: $(kernel_object_files) $(x86_64_object_files)
-	mkdir -p dist/x86_64 && \
-	x86_64-elf-ld -n -o dist/x86_64/kernel.bin -T targets/x86_64/linker.ld $(kernel_object_files) $(x86_64_object_files) && \
-	cp dist/x86_64/kernel.bin targets/x86_64/iso/boot/kernel.bin && \
-	grub-mkrescue /usr/lib/grub/i386-pc -o dist/x86_64/kernel.iso targets/x86_64/iso
-	objcopy --only-keep-debug dist/x86_64/kernel.bin dist/x86_64/kernel.sym
+build: $(Boot_O_Files) $(Kernel_O_Files)
+	i686-elf-gcc -T targets/linker.ld -o ./out/fullerene.bin -ffreestanding -O2 -nostdlib $^ -lgcc
+	echo "= Checking if multiboot is legit ="
+	grub-file --is-x86-multiboot ./out/fullerene.bin
+	grub-mkrescue -o fullerene.iso out
 
 .PHONY: clear
-clear: $(kernel_object_files) $(x86_64_object_files)
-	cd build/x86_64
+clear:
+	cd build/
 	find . -name "*.o" -type f -delete
+	cd out/
+	find . -name "*.bin" -type f -delete
+	find . -name "*.iso" -type f -delete
